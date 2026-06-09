@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divya Bathala — Full Stack Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060a;--bg2:#0d0d14;--bg3:#12121c;
+  --v:#7c3aed;--v2:#a855f7;--v3:#c084fc;
+  --c:#06b6d4;--c2:#22d3ee;
+  --g:#10b981;
+  --o:#f97316;
+  --text:#f8f8ff;--muted:#64638a;--muted2:#9998b8;
+  --border:rgba(124,58,237,0.15);
+  --border2:rgba(255,255,255,0.06);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:16px;line-height:1.7;
+  overflow-x:hidden;cursor:none;
+}
+
+/* CURSOR */
+#cursor{
+  position:fixed;width:12px;height:12px;border-radius:50%;
+  background:var(--v2);pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.05s,width 0.2s,height 0.2s,background 0.2s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;border-radius:50%;
+  border:1px solid rgba(168,85,247,0.5);pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform 0.12s ease,width 0.3s,height 0.3s;
+}
+body:hover #cursor{opacity:1}
+
+/* CANVAS BACKGROUND */
+#bg-canvas{position:fixed;inset:0;z-index:0;opacity:0.4}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.25rem 5rem;
+  border-bottom:1px solid var(--border);
+  background:rgba(6,6,10,0.7);
+  backdrop-filter:blur(20px);
+}
+.nav-mark{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;letter-spacing:0.08em;
+  background:linear-gradient(90deg,var(--v2),var(--c2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:0.82rem;
+  letter-spacing:0.08em;text-transform:uppercase;font-weight:500;
+  transition:color 0.2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
+  background:var(--v2);transition:width 0.3s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{
+  background:var(--v);color:#fff;text-decoration:none;
+  padding:0.55rem 1.4rem;border-radius:6px;font-size:0.82rem;
+  font-weight:500;letter-spacing:0.04em;
+  transition:background 0.2s,transform 0.15s;
+}
+.nav-cta:hover{background:var(--v2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:8rem 5rem 5rem;position:relative;overflow:hidden;
+}
+.hero-left{flex:1;position:relative;z-index:1}
+.hero-right{
+  flex:0 0 380px;position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.greeting{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.85rem;color:var(--c2);letter-spacing:0.05em;
+  margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;
+  animation:fadeIn 0.8s ease both;
+}
+.greeting::before{content:'// ';opacity:0.5}
+.blink{animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,11vw,9rem);
+  line-height:0.88;letter-spacing:0.02em;
+  margin-bottom:1.5rem;
+  animation:slideUp 0.9s 0.1s ease both;
+}
+.hero-name .line1{
+  display:block;
+  background:linear-gradient(135deg,#fff 40%,var(--muted2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-name .line2{
+  display:block;
+  background:linear-gradient(135deg,var(--v2) 0%,var(--c2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-role{
+  font-family:'JetBrains Mono',monospace;font-size:0.95rem;
+  color:var(--muted2);margin-bottom:2rem;
+  animation:slideUp 0.9s 0.2s ease both;
+}
+.hero-role span{color:var(--g);font-weight:500}
+
+.hero-desc{
+  font-size:1.05rem;color:rgba(248,248,255,0.6);line-height:1.85;
+  max-width:520px;margin-bottom:3rem;font-weight:300;
+  animation:slideUp 0.9s 0.3s ease both;
+}
+
+.hero-btns{display:flex;gap:1rem;animation:slideUp 0.9s 0.4s ease both}
+.btn-main{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:linear-gradient(135deg,var(--v),var(--v2));
+  color:#fff;text-decoration:none;padding:0.9rem 2.2rem;
+  border-radius:8px;font-weight:600;font-size:0.9rem;
+  transition:opacity 0.2s,transform 0.15s;
+  box-shadow:0 0 30px rgba(124,58,237,0.35);
+}
+.btn-main:hover{opacity:0.9;transform:translateY(-3px);box-shadow:0 0 40px rgba(124,58,237,0.5)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  border:1px solid rgba(255,255,255,0.12);color:var(--text);
+  text-decoration:none;padding:0.9rem 2.2rem;border-radius:8px;
+  font-weight:400;font-size:0.9rem;background:transparent;
+  transition:border-color 0.2s,transform 0.15s,background 0.2s;
+}
+.btn-ghost:hover{border-color:var(--v2);background:rgba(124,58,237,0.08);transform:translateY(-3px)}
+
+/* HERO CARD (right side) */
+.id-card{
+  width:300px;
+  background:linear-gradient(145deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));
+  border:1px solid rgba(124,58,237,0.25);
+  border-radius:20px;padding:2.5rem 2rem;
+  animation:float 6s ease-in-out infinite,slideUp 1s 0.5s ease both;
+  position:relative;overflow:hidden;
+}
+.id-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(124,58,237,0.06) 0%,transparent 60%);
+  border-radius:inherit;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+.id-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--v),var(--c));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#fff;
+  margin-bottom:1.5rem;position:relative;
+  box-shadow:0 0 20px rgba(124,58,237,0.4);
+}
+.id-avatar::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  border:1px solid rgba(124,58,237,0.4);animation:spin 8s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.id-name{font-family:'Outfit',sans-serif;font-weight:600;font-size:1rem;margin-bottom:0.2rem}
+.id-title{font-size:0.8rem;color:var(--c2);font-family:'JetBrains Mono',monospace;margin-bottom:1.5rem}
+.id-stat{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:0.82rem;
+}
+.id-stat:last-child{border-bottom:none}
+.id-stat-label{color:var(--muted);font-size:0.77rem;text-transform:uppercase;letter-spacing:0.06em}
+.id-stat-val{font-family:'JetBrains Mono',monospace;color:var(--v3);font-weight:500}
+
+/* MARQUEE */
+.marquee-wrap{
+  background:var(--bg2);border-top:1px solid var(--border2);
+  border-bottom:1px solid var(--border2);
+  padding:1rem 0;overflow:hidden;position:relative;z-index:1;
+}
+.marquee-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:marquee 25s linear infinite;
+}
+.marquee-track span{
+  font-family:'JetBrains Mono',monospace;font-size:0.8rem;
+  color:var(--muted);padding:0 2.5rem;letter-spacing:0.04em;
+}
+.marquee-track span b{color:var(--v3);font-weight:500}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION BASE */
+section{padding:7rem 5rem;position:relative;z-index:1}
+.s-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem;color:var(--v3);letter-spacing:0.12em;text-transform:uppercase;
+  display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;
+}
+.s-label::before{content:'';width:2rem;height:1px;background:var(--v3);flex-shrink:0}
+.s-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.8rem,5vw,4.5rem);letter-spacing:0.04em;
+  line-height:0.95;margin-bottom:1.25rem;
+}
+.s-sub{color:var(--muted2);font-size:1rem;max-width:480px;font-weight:300;line-height:1.8}
+
+/* SKILLS – bento grid */
+#skills{background:var(--bg2)}
+.bento{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:auto;
+  gap:1rem;margin-top:3.5rem;
+}
+.bento-cell{
+  background:rgba(255,255,255,0.025);
+  border:1px solid var(--border2);border-radius:14px;
+  padding:1.75rem;
+  transition:border-color 0.3s,transform 0.3s,background 0.3s;
+  position:relative;overflow:hidden;
+}
+.bento-cell:hover{
+  border-color:rgba(124,58,237,0.4);
+  background:rgba(124,58,237,0.05);
+  transform:translateY(-4px);
+}
+.bento-cell::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(124,58,237,0.08),transparent 65%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.bento-cell:hover::after{opacity:1}
+
+.bc-span2{grid-column:span 2}
+.bc-span3{grid-column:span 3}
+.bc-span6{grid-column:span 6}
+
+.bento-icon{font-size:2rem;margin-bottom:1rem;display:block;line-height:1}
+.bento-head{
+  font-family:'Outfit',sans-serif;font-weight:600;
+  font-size:0.95rem;margin-bottom:0.25rem;color:var(--text);
+}
+.bento-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.1rem}
+.pill-group{display:flex;flex-wrap:wrap;gap:0.4rem}
+.pill{
+  font-size:0.72rem;padding:0.25rem 0.7rem;border-radius:100px;
+  border:1px solid;font-weight:500;letter-spacing:0.02em;
+}
+.pv{color:#c084fc;border-color:rgba(192,132,252,0.25);background:rgba(192,132,252,0.07)}
+.pc{color:#22d3ee;border-color:rgba(34,211,238,0.25);background:rgba(34,211,238,0.07)}
+.po{color:#fb923c;border-color:rgba(251,146,60,0.25);background:rgba(251,146,60,0.07)}
+.pb{color:#60a5fa;border-color:rgba(96,165,250,0.25);background:rgba(96,165,250,0.07)}
+.pg{color:#4ade80;border-color:rgba(74,222,128,0.25);background:rgba(74,222,128,0.07)}
+.pp{color:#f472b6;border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.07)}
+
+/* big number cells */
+.bento-big-num{
+  font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;
+  background:linear-gradient(135deg,var(--v2),var(--c2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:0.35rem;
+}
+.bento-big-label{font-size:0.8rem;color:var(--muted);font-weight:300}
+
+/* EXPERIENCE */
+#experience{background:var(--bg)}
+.exp-list{margin-top:3.5rem;display:flex;flex-direction:column;gap:1.5rem}
+.exp-card{
+  display:grid;grid-template-columns:1fr 3fr;gap:2.5rem;
+  background:rgba(255,255,255,0.02);border:1px solid var(--border2);
+  border-radius:16px;padding:2.5rem;
+  transition:border-color 0.3s,background 0.3s;
+  position:relative;overflow:hidden;
+}
+.exp-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,var(--v),var(--c));
+  border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.3s;
+}
+.exp-card:hover{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.03)}
+.exp-card:hover::before{opacity:1}
+.exp-meta{}
+.exp-period{
+  font-family:'JetBrains Mono',monospace;font-size:0.75rem;
+  color:var(--v3);background:rgba(192,132,252,0.08);
+  border:1px solid rgba(192,132,252,0.15);
+  padding:0.3rem 0.75rem;border-radius:100px;
+  display:inline-block;margin-bottom:1rem;
+}
+.exp-co{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:0.2rem}
+.exp-loc{font-size:0.78rem;color:var(--muted);font-weight:300}
+.exp-role-name{
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:1.3rem;
+  color:var(--text);margin-bottom:0.2rem;
+}
+.exp-role-co{font-size:0.85rem;color:var(--c2);margin-bottom:1.25rem;font-weight:400}
+.exp-bullets{list-style:none;display:flex;flex-direction:column;gap:0.55rem}
+.exp-bullets li{
+  font-size:0.9rem;color:rgba(248,248,255,0.72);
+  padding-left:1.4rem;position:relative;line-height:1.65;font-weight:300;
+}
+.exp-bullets li::before{
+  content:'▸';position:absolute;left:0;color:var(--v3);
+  font-size:0.75rem;top:0.15rem;
+}
+.exp-bullets li em{color:var(--c2);font-style:normal;font-weight:500}
+
+/* PROJECTS */
+#projects{background:var(--bg2)}
+.proj-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.25rem;margin-top:3.5rem;
+}
+.proj-card{
+  background:rgba(255,255,255,0.025);border:1px solid var(--border2);
+  border-radius:16px;padding:2rem;
+  display:flex;flex-direction:column;
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;overflow:hidden;
+}
+.proj-card::before{
+  content:attr(data-num);
+  position:absolute;right:1.5rem;top:1.5rem;
+  font-family:'Bebas Neue',sans-serif;font-size:4rem;
+  color:rgba(124,58,237,0.06);line-height:1;pointer-events:none;
+}
+.proj-card:hover{border-color:rgba(124,58,237,0.35);transform:translateY(-6px)}
+.proj-card:nth-child(2):hover{border-color:rgba(6,182,212,0.35)}
+.proj-card:nth-child(3):hover{border-color:rgba(16,185,129,0.35)}
+.proj-type{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.25rem;
+}
+.proj-type.ai{color:var(--v3)}
+.proj-type.backend{color:var(--c2)}
+.proj-type.enterprise{color:var(--g)}
+.proj-title{
+  font-family:'Outfit',sans-serif;font-weight:700;
+  font-size:1.15rem;line-height:1.3;margin-bottom:0.85rem;
+}
+.proj-desc{
+  font-size:0.86rem;color:var(--muted2);line-height:1.75;
+  flex:1;margin-bottom:1.5rem;font-weight:300;
+}
+.proj-stack{display:flex;flex-wrap:wrap;gap:0.4rem}
+
+/* EDUCATION */
+#education{background:var(--bg)}
+.edu-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1.25rem;margin-top:3.5rem;
+}
+.edu-card{
+  background:rgba(255,255,255,0.025);border:1px solid var(--border2);
+  border-radius:14px;padding:2rem;
+  transition:border-color 0.3s;
+  position:relative;overflow:hidden;
+}
+.edu-card::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--v),var(--c));opacity:0;
+  transition:opacity 0.3s;
+}
+.edu-card:hover{border-color:rgba(124,58,237,0.3)}
+.edu-card:hover::before{opacity:1}
+.edu-icon{
+  font-size:1.75rem;margin-bottom:1.25rem;
+  width:52px;height:52px;border-radius:12px;
+  background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);
+  display:flex;align-items:center;justify-content:center;
+}
+.edu-deg{font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.2rem}
+.edu-field{font-size:0.85rem;color:var(--c2);margin-bottom:0.5rem}
+.edu-school{font-size:0.85rem;color:var(--muted2);margin-bottom:0.35rem}
+.edu-yr{
+  font-family:'JetBrains Mono',monospace;font-size:0.73rem;
+  color:var(--muted);
+}
+.cert-row{
+  display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem;
+}
+.cert{
+  display:flex;align-items:center;gap:0.85rem;
+  background:rgba(255,255,255,0.025);border:1px solid var(--border2);
+  border-radius:12px;padding:1rem 1.5rem;flex:1;min-width:260px;
+  transition:border-color 0.3s;
+}
+.cert:hover{border-color:rgba(249,115,22,0.35)}
+.cert-ico{font-size:1.5rem}
+.cert-nm{font-size:0.88rem;font-weight:500}
+.cert-is{font-size:0.75rem;color:var(--muted)}
+
+/* CONTACT */
+#contact{
+  background:var(--bg2);
+  text-align:center;padding-bottom:8rem;
+}
+.contact-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,7vw,6rem);letter-spacing:0.05em;
+  background:linear-gradient(135deg,var(--text) 0%,var(--v2) 50%,var(--c2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:1.5rem;line-height:1;
+}
+.contact-sub{
+  color:var(--muted2);font-size:1.05rem;font-weight:300;
+  max-width:460px;margin:0 auto 3rem;line-height:1.8;
+}
+.contact-chips{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0.85rem;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  border:1px solid var(--border2);color:var(--text);text-decoration:none;
+  padding:0.85rem 1.75rem;border-radius:100px;font-size:0.88rem;font-weight:400;
+  background:rgba(255,255,255,0.025);
+  transition:border-color 0.2s,background 0.2s,transform 0.2s;
+}
+.chip:hover{
+  border-color:var(--v2);background:rgba(124,58,237,0.1);
+  transform:translateY(-3px);
+}
+.chip svg{width:16px;height:16px;opacity:0.7}
+
+/* FOOTER */
+footer{
+  padding:2rem 5rem;border-top:1px solid var(--border2);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:0.8rem;color:var(--muted);flex-wrap:wrap;gap:0.5rem;
+  position:relative;z-index:1;
+}
+.footer-mark{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;letter-spacing:0.06em;
+  background:linear-gradient(90deg,var(--v2),var(--c2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links,.nav-cta{display:none}
+  .hero{padding:7rem 1.5rem 4rem;flex-direction:column;gap:3rem}
+  .hero-right{flex:unset}
+  section{padding:4.5rem 1.5rem}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .bc-span2,.bc-span3,.bc-span6{grid-column:span 2}
+  .exp-card{grid-template-columns:1fr;gap:1rem}
+  .proj-grid,.edu-grid{grid-template-columns:1fr}
+  footer{padding:1.5rem;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-mark">D.B.</div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:divyab71@outlook.com" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="greeting">full_stack_engineer.java <span class="blink">|</span></div>
+    <h1 class="hero-name">
+      <span class="line1">DIVYA</span>
+      <span class="line2">BATHALA</span>
+    </h1>
+    <p class="hero-role">Java · Spring Boot · React · <span>AWS</span> · Microservices · Kafka</p>
+    <p class="hero-desc">I architect and ship production-grade enterprise systems — reactive microservices, event-driven pipelines, and polished React frontends — with 6+ years across aviation, logistics, and education.</p>
+    <div class="hero-btns">
+      <a href="#experience" class="btn-main">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        See My Work
+      </a>
+      <a href="#contact" class="btn-ghost">Let's Talk</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="id-card">
+      <div class="id-avatar">DB</div>
+      <div class="id-name">Divya Bathala</div>
+      <div class="id-title">software_engineer.class</div>
+      <div class="id-stat">
+        <span class="id-stat-label">Experience</span>
+        <span class="id-stat-val">6+ years</span>
+      </div>
+      <div class="id-stat">
+        <span class="id-stat-label">Location</span>
+        <span class="id-stat-val">Dallas, TX</span>
+      </div>
+      <div class="id-stat">
+        <span class="id-stat-label">Status</span>
+        <span class="id-stat-val" style="color:#4ade80">● Open</span>
+      </div>
+      <div class="id-stat">
+        <span class="id-stat-label">Stack</span>
+        <span class="id-stat-val">Java / React</span>
+      </div>
+      <div class="id-stat">
+        <span class="id-stat-label">Cloud</span>
+        <span class="id-stat-val">AWS + Azure</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span><b>Java</b> / Spring Boot</span>
+    <span><b>React.js</b> / Redux</span>
+    <span><b>Microservices</b> Architecture</span>
+    <span><b>Apache Kafka</b> Event Streaming</span>
+    <span><b>AWS</b> EC2 · S3 · Lambda · EKS</span>
+    <span><b>MongoDB</b> / PostgreSQL</span>
+    <span><b>Docker</b> / Kubernetes</span>
+    <span><b>Spring WebFlux</b> Reactive</span>
+    <span><b>Jenkins</b> CI/CD</span>
+    <span><b>Azure</b> Fundamentals (AZ-900)</span>
+    <span><b>Java</b> / Spring Boot</span>
+    <span><b>React.js</b> / Redux</span>
+    <span><b>Microservices</b> Architecture</span>
+    <span><b>Apache Kafka</b> Event Streaming</span>
+    <span><b>AWS</b> EC2 · S3 · Lambda · EKS</span>
+    <span><b>MongoDB</b> / PostgreSQL</span>
+    <span><b>Docker</b> / Kubernetes</span>
+    <span><b>Spring WebFlux</b> Reactive</span>
+    <span><b>Jenkins</b> CI/CD</span>
+    <span><b>Azure</b> Fundamentals (AZ-900)</span>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal">
+    <p class="s-label">Technical Expertise</p>
+    <h2 class="s-title">Skills &<br>Stack</h2>
+  </div>
+  <div class="bento reveal">
+    <!-- row 1 -->
+    <div class="bento-cell bc-span2">
+      <span class="bento-icon">☕</span>
+      <div class="bento-head">Backend</div>
+      <div class="bento-sub">Java-first, cloud-native services</div>
+      <div class="pill-group">
+        <span class="pill pv">Java</span>
+        <span class="pill pv">Spring Boot</span>
+        <span class="pill pv">Spring WebFlux</span>
+        <span class="pill pv">Hibernate</span>
+        <span class="pill pv">REST APIs</span>
+        <span class="pill pv">Microservices</span>
+      </div>
+    </div>
+    <div class="bento-cell bc-span2">
+      <span class="bento-icon">⚛</span>
+      <div class="bento-head">Frontend</div>
+      <div class="bento-sub">Interactive, responsive UIs</div>
+      <div class="pill-group">
+        <span class="pill pc">React.js</span>
+        <span class="pill pc">Redux</span>
+        <span class="pill pc">JavaScript</span>
+        <span class="pill pc">HTML5</span>
+        <span class="pill pc">CSS3</span>
+        <span class="pill pc">Axios</span>
+      </div>
+    </div>
+    <div class="bento-cell bc-span2">
+      <span class="bento-icon">⚡</span>
+      <div class="bento-head">Messaging</div>
+      <div class="bento-sub">Event-driven architecture</div>
+      <div class="pill-group">
+        <span class="pill po">Apache Kafka</span>
+        <span class="pill po">Confluent Kafka</span>
+        <span class="pill po">Redis</span>
+        <span class="pill po">SQS</span>
+      </div>
+    </div>
+    <!-- row 2 -->
+    <div class="bento-cell bc-span3">
+      <span class="bento-icon">☁</span>
+      <div class="bento-head">Cloud & DevOps</div>
+      <div class="bento-sub">Deploy, scale, automate</div>
+      <div class="pill-group">
+        <span class="pill pb">AWS EC2</span>
+        <span class="pill pb">S3</span>
+        <span class="pill pb">Lambda</span>
+        <span class="pill pb">RDS</span>
+        <span class="pill pb">EKS</span>
+        <span class="pill pb">DynamoDB</span>
+        <span class="pill pb">Azure AKS</span>
+        <span class="pill pb">Docker</span>
+        <span class="pill pb">Kubernetes</span>
+        <span class="pill pb">Terraform</span>
+        <span class="pill pb">Jenkins</span>
+      </div>
+    </div>
+    <div class="bento-cell bc-span3">
+      <span class="bento-icon">🗄</span>
+      <div class="bento-head">Databases</div>
+      <div class="bento-sub">Relational, NoSQL & cache</div>
+      <div class="pill-group">
+        <span class="pill po">MongoDB</span>
+        <span class="pill pg">PostgreSQL</span>
+        <span class="pill pg">MySQL</span>
+        <span class="pill pg">Oracle</span>
+        <span class="pill pc">Redis</span>
+      </div>
+    </div>
+    <!-- row 3: stats -->
+    <div class="bento-cell bc-span2" style="text-align:center;padding:2rem 1.5rem">
+      <div class="bento-big-num">35%</div>
+      <div class="bento-big-label">avg latency reduction delivered</div>
+    </div>
+    <div class="bento-cell bc-span2" style="text-align:center;padding:2rem 1.5rem">
+      <div class="bento-big-num">60%</div>
+      <div class="bento-big-label">faster release cycles via CI/CD</div>
+    </div>
+    <div class="bento-cell bc-span2" style="text-align:center;padding:2rem 1.5rem">
+      <div class="bento-big-num">99.9%</div>
+      <div class="bento-big-label">uptime maintained in production</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <p class="s-label">Career Journey</p>
+    <h2 class="s-title">Work<br>Experience</h2>
+    <p class="s-sub">Production systems for high-traffic platforms in aviation, logistics, and education.</p>
+  </div>
+  <div class="exp-list reveal">
+
+    <div class="exp-card">
+      <div class="exp-meta">
+        <div class="exp-period">Feb 2025 – Present</div>
+        <div class="exp-co">Southwest Airlines</div>
+        <div class="exp-loc">Remote</div>
+      </div>
+      <div>
+        <div class="exp-role-name">Software Engineer</div>
+        <div class="exp-role-co">Java · Spring WebFlux · Kafka · React · AWS</div>
+        <ul class="exp-bullets">
+          <li>Built scalable microservices with <em>Spring Boot + WebFlux</em> for a flight booking platform handling <em>1,000+ concurrent users</em> on MongoDB and MySQL.</li>
+          <li>Reduced frontend-backend latency by <em>35%</em> via RESTful APIs between React.js and Spring Boot using Axios.</li>
+          <li>Integrated <em>Apache Kafka</em> for async event streaming of booking and notification events, decoupling services across the pipeline.</li>
+          <li>Secured system with <em>Spring Security RBAC</em>, cutting unauthorized access by 90% across customer, admin, and staff roles.</li>
+          <li>Built serverless notification system on <em>AWS Lambda</em>, eliminating 80% of manual notification effort.</li>
+          <li><em>Jenkins + GitHub CI/CD</em> pipeline: deployment time cut from 30 min → 5 min.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-meta">
+        <div class="exp-period">Dec 2023 – Jan 2025</div>
+        <div class="exp-co">NW Missouri State Univ.</div>
+        <div class="exp-loc">Maryville, MO</div>
+      </div>
+      <div>
+        <div class="exp-role-name">Software Developer</div>
+        <div class="exp-role-co">Java · Spring Boot · MongoDB · Kafka</div>
+        <ul class="exp-bullets">
+          <li>Developed university portal in <em>Spring Boot</em>, improving page load by <em>35%</em> for 500+ daily users.</li>
+          <li>Designed <em>MongoDB-backed data layer</em> for dynamic course content with flexible schema evolution.</li>
+          <li>Integrated <em>Kafka messaging</em> for async student registration events, decoupling enrollment services.</li>
+          <li>Automated releases with <em>Jenkins CI/CD</em>, reducing manual effort by 70% across sprints.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-meta">
+        <div class="exp-period">Feb 2022 – Jul 2023</div>
+        <div class="exp-co">FedEx via Eviden / Atos</div>
+        <div class="exp-loc">India</div>
+      </div>
+      <div>
+        <div class="exp-role-name">Associate Consultant</div>
+        <div class="exp-role-co">Java · Spring WebFlux · Confluent Kafka · AWS · Oracle</div>
+        <ul class="exp-bullets">
+          <li>Built enterprise logistics applications with <em>Java + Spring Boot microservices</em> handling high-volume concurrent transactions.</li>
+          <li><em>Spring WebFlux</em> non-blocking endpoints for real-time logistics data feeds under peak load.</li>
+          <li>Maintained <em>99.9% uptime</em> for global logistics operations on AWS (EC2, S3, RDS).</li>
+          <li>Reduced release cycle time by <em>60%</em> with Jenkins + Docker containerization.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-meta">
+        <div class="exp-period">Dec 2019 – Dec 2021</div>
+        <div class="exp-co">Shiash Info Solutions</div>
+        <div class="exp-loc">India</div>
+      </div>
+      <div>
+        <div class="exp-role-name">Junior Java Developer</div>
+        <div class="exp-role-co">Java · Spring Boot · React · MySQL</div>
+        <ul class="exp-bullets">
+          <li>Delivered CRUD features in <em>Spring Boot + REST APIs</em> for multiple client projects, reducing manual processing by 25%.</li>
+          <li>Contributed <em>React.js + CSS</em> UI enhancements with improved responsiveness and interaction.</li>
+          <li>Reduced defects by <em>30%</em> through JUnit testing, integration testing, and bug fixing.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="s-label">Portfolio</p>
+    <h2 class="s-title">Featured<br>Projects</h2>
+  </div>
+  <div class="proj-grid reveal">
+    <div class="proj-card" data-num="01">
+      <div class="proj-type ai">AI / RAG Application</div>
+      <div class="proj-title">AI Academic Copilot</div>
+      <p class="proj-desc">Full-stack RAG application that lets students query academic content with natural language. Built with React, Spring Boot, Python FastAPI, LangChain, ChromaDB, and HuggingFace embedding models.</p>
+      <div class="proj-stack">
+        <span class="pill pc">React</span>
+        <span class="pill pv">Spring Boot</span>
+        <span class="pill po">FastAPI</span>
+        <span class="pill pb">LangChain</span>
+        <span class="pill pg">ChromaDB</span>
+      </div>
+    </div>
+    <div class="proj-card" data-num="02">
+      <div class="proj-type backend">High-Traffic Platform</div>
+      <div class="proj-title">Flight Booking Microservices</div>
+      <p class="proj-desc">Reactive booking system supporting 1,000+ concurrent users with Kafka event streaming, Spring Security RBAC, and AWS Lambda serverless notifications. 35% latency reduction delivered.</p>
+      <div class="proj-stack">
+        <span class="pill pv">Spring WebFlux</span>
+        <span class="pill po">Kafka</span>
+        <span class="pill pb">AWS Lambda</span>
+        <span class="pill pg">MongoDB</span>
+      </div>
+    </div>
+    <div class="proj-card" data-num="03">
+      <div class="proj-type enterprise">Enterprise Logistics</div>
+      <div class="proj-title">FedEx Logistics Platform</div>
+      <p class="proj-desc">Real-time shipment tracking with Confluent Kafka event-driven comms, 99.9% AWS uptime, Oracle + MongoDB data layers, and 60% faster releases through Docker + Jenkins CI/CD.</p>
+      <div class="proj-stack">
+        <span class="pill po">Confluent Kafka</span>
+        <span class="pill pb">AWS EC2/RDS</span>
+        <span class="pill pc">Spring WebFlux</span>
+        <span class="pill pg">Oracle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="reveal">
+    <p class="s-label">Academic Background</p>
+    <h2 class="s-title">Education &<br>Certs</h2>
+  </div>
+  <div class="edu-grid reveal">
+    <div class="edu-card">
+      <div class="edu-icon">🎓</div>
+      <div class="edu-deg">Master's Degree</div>
+      <div class="edu-field">Applied Computer Science</div>
+      <div class="edu-school">Northwest Missouri State University</div>
+      <div class="edu-yr">2023 – 2025</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-icon">🎓</div>
+      <div class="edu-deg">Bachelor's Degree</div>
+      <div class="edu-field">Electronics & Communication Engineering</div>
+      <div class="edu-school">Sathyabama Institute of Science & Technology</div>
+      <div class="edu-yr">2017 – 2021</div>
+    </div>
+  </div>
+  <div class="cert-row reveal">
+    <div class="cert">
+      <div class="cert-ico">🏅</div>
+      <div>
+        <div class="cert-nm">Microsoft Azure Fundamentals (AZ-900)</div>
+        <div class="cert-is">Microsoft Certified</div>
+      </div>
+    </div>
+    <div class="cert">
+      <div class="cert-ico">🏅</div>
+      <div>
+        <div class="cert-nm">Database Management & Advanced SQL</div>
+        <div class="cert-is">HackerRank Certified</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="s-label" style="justify-content:center">Get In Touch</p>
+    <div class="contact-big">LET'S BUILD<br>SOMETHING GREAT</div>
+    <p class="contact-sub">Open to full-time and contract roles in Full Stack Java, Cloud, or Microservices engineering. Based in Dallas, TX — remote and hybrid welcome.</p>
+    <div class="contact-chips">
+      <a href="mailto:divyab71@outlook.com" class="chip">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+        divyab71@outlook.com
+      </a>
+      <a href="tel:4698857723" class="chip">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+        469-885-7723
+      </a>
+      <a href="https://www.linkedin.com/in/divya-bathala/" target="_blank" class="chip">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="#" class="chip">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+        Dallas, TX
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-mark">DIVYA BATHALA</div>
+  <span>Full Stack Engineer · Dallas, TX · 2025</span>
+  <span>Java · React · AWS · Microservices</span>
+</footer>
+
+<script>
+/* CURSOR */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.bento-cell,.exp-card,.proj-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.width='20px';cur.style.height='20px';
+    ring.style.width='52px';ring.style.height='52px';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur.style.width='12px';cur.style.height='12px';
+    ring.style.width='36px';ring.style.height='36px';
+  });
+});
+
+/* PARTICLE CANVAS */
+const cv=document.getElementById('bg-canvas');
+const ctx=cv.getContext('2d');
+let W,H,pts=[];
+function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+resize();
+window.addEventListener('resize',resize);
+const colors=['rgba(124,58,237,','rgba(6,182,212,','rgba(167,139,250,'];
+for(let i=0;i<80;i++){
+  pts.push({
+    x:Math.random()*1400,y:Math.random()*900,
+    vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
+    r:Math.random()*1.5+0.3,
+    c:colors[Math.floor(Math.random()*colors.length)],
+    a:Math.random()*0.5+0.1
+  });
+}
+function drawCanvas(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;
+    if(p.y<0||p.y>H)p.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.c+p.a+')';
+    ctx.fill();
+  });
+  /* draw connections */
+  for(let i=0;i<pts.length;i++){
+    for(let j=i+1;j<pts.length;j++){
+      const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
+      if(d<120){
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x,pts[i].y);
+        ctx.lineTo(pts[j].x,pts[j].y);
+        ctx.strokeStyle='rgba(124,58,237,'+(0.12*(1-d/120))+')';
+        ctx.lineWidth=0.4;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawCanvas);
+}
+drawCanvas();
+
+/* BENTO MOUSE GLOW */
+document.querySelectorAll('.bento-cell').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1);
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1);
+    el.style.setProperty('--mx',x+'%');
+    el.style.setProperty('--my',y+'%');
+  });
+});
+
+/* SCROLL REVEAL */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'),i*90);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
